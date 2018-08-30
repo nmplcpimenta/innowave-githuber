@@ -18,6 +18,8 @@
 		8094E9442137368200E17525 /* GitHubUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8094E9432137368200E17525 /* GitHubUser.swift */; };
 		8094E94721373CF800E17525 /* GitHubUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8094E94621373CF800E17525 /* GitHubUserTableViewCell.swift */; };
 		8094E94A213750D800E17525 /* RESTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8094E949213750D800E17525 /* RESTManager.swift */; };
+		8094E94C2137622F00E17525 /* GHSearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8094E94B2137622F00E17525 /* GHSearchResponse.swift */; };
+		8094E94E21376A1A00E17525 /* GHSearchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8094E94D21376A1A00E17525 /* GHSearchUser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,8 @@
 		8094E9432137368200E17525 /* GitHubUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUser.swift; sourceTree = "<group>"; };
 		8094E94621373CF800E17525 /* GitHubUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUserTableViewCell.swift; sourceTree = "<group>"; };
 		8094E949213750D800E17525 /* RESTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTManager.swift; sourceTree = "<group>"; };
+		8094E94B2137622F00E17525 /* GHSearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GHSearchResponse.swift; sourceTree = "<group>"; };
+		8094E94D21376A1A00E17525 /* GHSearchUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GHSearchUser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +153,8 @@
 			isa = PBXGroup;
 			children = (
 				8094E9432137368200E17525 /* GitHubUser.swift */,
+				8094E94B2137622F00E17525 /* GHSearchResponse.swift */,
+				8094E94D21376A1A00E17525 /* GHSearchUser.swift */,
 			);
 			path = datamodels;
 			sourceTree = "<group>";
@@ -301,10 +307,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				8094E94721373CF800E17525 /* GitHubUserTableViewCell.swift in Sources */,
+				8094E94E21376A1A00E17525 /* GHSearchUser.swift in Sources */,
 				8024015521371A6C00ECC4CB /* UserDetailController.swift in Sources */,
 				8094E9442137368200E17525 /* GitHubUser.swift in Sources */,
 				8094E94A213750D800E17525 /* RESTManager.swift in Sources */,
 				8024015321371A3D00ECC4CB /* StalkingController.swift in Sources */,
+				8094E94C2137622F00E17525 /* GHSearchResponse.swift in Sources */,
 				8024011E2137179D00ECC4CB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

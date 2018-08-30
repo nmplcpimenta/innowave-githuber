@@ -10,4 +10,16 @@ import UIKit
 
 struct GitHubUser : Codable {
     let login: String
+    let avatar_url: String
+    let name: String
+    let email: String
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        login = try container.decode(String.self, forKey: .login)
+        avatar_url = try container.decode(String.self, forKey: .avatar_url)
+        name = try container.decode(String.self, forKey: .name)
+        do { email = try container.decode(String.self, forKey: .email) }
+        catch { email = "" }
+    }
 }

@@ -14,7 +14,7 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
     
     var userDetailViewController: UserDetailController? = nil
     
-    var githubUsers = [GitHubUser]()
+    var ghSearchUsers = [GHSearchUser]()
     
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -67,7 +67,7 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if githubUsers.count > 0 {
+        if ghSearchUsers.count > 0 {
             tableView.separatorStyle = .singleLine
             tableView.backgroundView = nil
         } else {
@@ -79,29 +79,39 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
             tableView.separatorStyle = .none
         }
         
-        return githubUsers.count
+        return ghSearchUsers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! GitHubUserTableViewCell
         
-        let ghUser = githubUsers[indexPath.row]
+        let ghUser = ghSearchUsers[indexPath.row]
         
         cell.nameLabel!.text = ghUser.login
         
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        RESTManager.getUser(login: ghSearchUsers[indexPath.row].login) { (wasSuccessful, githubUser) in
+            if wasSuccessful {
+                DispatchQueue.main.async {
+                    self.performSegue(withIdentifier: "showUserDetail", sender: githubUser)
+                }
+            } else {
+                // TODO Show error
+            }
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showUserDetail" {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                let ghUser = githubUsers[indexPath.row]
-                
-                let controller = (segue.destination as! UINavigationController).topViewController as! UserDetailController
-                controller.detailGHUser = ghUser
-                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-                controller.navigationItem.leftItemsSupplementBackButton = true
-            }
+            let ghUser = sender as! GitHubUser
+            
+            let controller = (segue.destination as! UINavigationController).topViewController as! UserDetailController
+            controller.detailGHUser = ghUser
+            controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+            controller.navigationItem.leftItemsSupplementBackButton = true
         }
     }
     
@@ -111,15 +121,19 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        RESTManager.testREST(handler: { (wasSuccessful, ghUsers) in
-            self.githubUsers = ghUsers.filter({( ghUser : GitHubUser) -> Bool in
-                return ghUser.login.lowercased().contains(searchText.lowercased())
-            })
-            
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+        if !searchBarIsEmpty() {
+            RESTManager.searchUser(user: searchText.lowercased()) { (wasSuccessful, ghUsers) in
+                self.ghSearchUsers = ghUsers
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
-        })
+        } else {
+            self.ghSearchUsers = []
+            
+            self.tableView.reloadData()
+        }
     }
     
     func isFiltering() -> Bool {

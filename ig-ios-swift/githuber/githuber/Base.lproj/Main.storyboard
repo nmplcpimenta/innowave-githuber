@@ -102,7 +102,6 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="nameLabel" destination="f9R-Eh-rQJ" id="Emg-42-ql8"/>
-                                            <segue destination="oQe-fT-qMd" kind="showDetail" identifier="showUserDetail" id="EJT-O3-Cav"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -124,6 +123,7 @@
                     <navigationItem key="navigationItem" id="7vS-UK-afz"/>
                     <connections>
                         <outlet property="tableView" destination="fKF-JX-bKH" id="xdI-lM-eQU"/>
+                        <segue destination="oQe-fT-qMd" kind="showDetail" identifier="showUserDetail" id="B0s-9l-M9j"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qg6-lb-kVT" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -163,6 +163,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="EJT-O3-Cav"/>
+        <segue reference="B0s-9l-M9j"/>
     </inferredMetricsTieBreakers>
 </document>

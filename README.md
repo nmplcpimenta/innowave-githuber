@@ -1,6 +1,6 @@
 # InnoWave GitHuber
 
-A GitHub search app where one may search for a specific user, see the user's details and list its followers.
+A GitHub search app for iOS where one may search for a specific user, see the user's details and list its followers.
 
 ## Functionality Description
 
@@ -10,8 +10,8 @@ A GitHub search app where one may search for a specific user, see the user's det
 
 ## App Screenshots
 
-![alt text](https://raw.githubusercontent.com/nmplcpimenta/innowave-githuber/dev/app-screenshots/app-ios-phone-ss-splashscreen.png)
+![iPhone Splashscreen](https://raw.githubusercontent.com/nmplcpimenta/innowave-githuber/dev/app-screenshots/app-ios-phone-ss-splashscreen.png | height=100)
 
 ## Authors
 
-* **Billie Thompson**
+* **Nuno Pimenta**

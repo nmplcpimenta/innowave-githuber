@@ -10,7 +10,7 @@ A GitHub search app for iOS where one may search for a specific user, see the us
 
 ## App Screenshots
 
-![iPhone Splashscreen](https://raw.githubusercontent.com/nmplcpimenta/innowave-githuber/dev/app-screenshots/app-ios-phone-ss-splashscreen.png | height=100)
+![iPhone Splashscreen](https://raw.githubusercontent.com/nmplcpimenta/innowave-githuber/dev/app-screenshots/app-ios-phone-ss-splashscreen.png | width=100)
 
 ## Authors
 

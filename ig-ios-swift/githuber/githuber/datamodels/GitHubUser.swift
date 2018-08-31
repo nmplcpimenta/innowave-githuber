@@ -18,8 +18,7 @@ struct GitHubUser : Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         login = try container.decode(String.self, forKey: .login)
         avatar_url = try container.decode(String.self, forKey: .avatar_url)
-        name = try container.decode(String.self, forKey: .name)
-        do { email = try container.decode(String.self, forKey: .email) }
-        catch { email = "" }
+        do { name = try container.decode(String.self, forKey: .name) } catch { name = "" }
+        do { email = try container.decode(String.self, forKey: .email) } catch { email = "" }
     }
 }

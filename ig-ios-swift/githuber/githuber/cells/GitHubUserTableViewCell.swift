@@ -11,6 +11,7 @@ import UIKit
 class GitHubUserTableViewCell: UITableViewCell {
     
     @IBOutlet var nameLabel: UILabel!
+    @IBOutlet weak var avatarImage: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()

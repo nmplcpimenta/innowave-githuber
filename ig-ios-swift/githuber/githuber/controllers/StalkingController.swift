@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StalkingController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating {
+class StalkingController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
 
     @IBOutlet var tableView: UITableView!
     
@@ -23,11 +23,28 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
         
         // Do any additional setup after loading the view.
         
-        searchController.searchResultsUpdater = self
+        
+        
+        //searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "username/e-mail GitHub"
+        searchController.searchBar.barStyle = .blackTranslucent
+        searchController.searchBar.searchBarStyle = .minimal
+        UIBarButtonItem.appearance(whenContainedInInstancesOf:[UISearchBar.self]).tintColor = UIColor.init(red: 4/256.0, green: 83/256.0, blue: 114/256.0, alpha: 1)
+        
+        /*if #available(iOS 11.0, *) {
+            searchController.searchBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        }*/
+        
+        // Include the search bar within the navigation bar.
+        navigationItem.titleView = searchController.searchBar
+        
+        searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "username GitHub"
-        navigationItem.searchController = searchController
+        
+        //navigationItem.searchController = searchController
         definesPresentationContext = true
+        
         
         if let splitViewController = splitViewController {
             let controllers = splitViewController.viewControllers
@@ -72,7 +89,7 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
             tableView.backgroundView = nil
         } else {
             let noDataLabel: UILabel     = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
-            noDataLabel.text = "No data available"
+            noDataLabel.text = "No users found"
             noDataLabel.textColor = UIColor.black
             noDataLabel.textAlignment = .center
             tableView.backgroundView = noDataLabel
@@ -88,18 +105,29 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
         let ghUser = ghSearchUsers[indexPath.row]
         
         cell.nameLabel!.text = ghUser.login
+        cell.avatarImage!.downloaded(from: ghUser.avatar_url)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        RESTManager.getUser(login: ghSearchUsers[indexPath.row].login) { (wasSuccessful, githubUser) in
+        let sv = UIViewController.displaySpinner(onView: self.view)
+        
+        RESTManager.getUser(withLogin: ghSearchUsers[indexPath.row].login) { (wasSuccessful, githubUser) in
             if wasSuccessful {
                 DispatchQueue.main.async {
+                    UIViewController.removeSpinner(spinner: sv)
+                    
                     self.performSegue(withIdentifier: "showUserDetail", sender: githubUser)
                 }
             } else {
                 // TODO Show error
+                
+                DispatchQueue.main.async {
+                    UIViewController.removeSpinner(spinner: sv)
+                    
+                    
+                }
             }
         }
     }
@@ -121,12 +149,16 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+        let sv = UIViewController.displaySpinner(onView: self.view)
+        
         if !searchBarIsEmpty() {
             RESTManager.searchUser(user: searchText.lowercased()) { (wasSuccessful, ghUsers) in
                 self.ghSearchUsers = ghUsers
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
+                    
+                    UIViewController.removeSpinner(spinner: sv)
                 }
             }
         } else {
@@ -141,7 +173,11 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     // Called when search bar text is changed
-    func updateSearchResults(for searchController: UISearchController) {
+    /*func updateSearchResults(for searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text!)
+    }*/
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         filterContentForSearchText(searchController.searchBar.text!)
     }
 }

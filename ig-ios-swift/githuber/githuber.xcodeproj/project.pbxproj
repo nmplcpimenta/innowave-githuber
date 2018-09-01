@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		801A8DE8213AB54A00B228CE /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A8DE7213AB54A00B228CE /* Utils.swift */; };
+		801A8DEB213AB98400B228CE /* Consuela.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A8DEA213AB98400B228CE /* Consuela.swift */; };
+		801A8DED213ABA8100B228CE /* GHError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 801A8DEC213ABA8100B228CE /* GHError.swift */; };
 		8024011E2137179D00ECC4CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8024011D2137179D00ECC4CB /* AppDelegate.swift */; };
 		802401232137179D00ECC4CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 802401212137179D00ECC4CB /* Main.storyboard */; };
 		802401252137179F00ECC4CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 802401242137179F00ECC4CB /* Assets.xcassets */; };
@@ -41,6 +44,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		801A8DE7213AB54A00B228CE /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		801A8DEA213AB98400B228CE /* Consuela.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consuela.swift; sourceTree = "<group>"; };
+		801A8DEC213ABA8100B228CE /* GHError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GHError.swift; sourceTree = "<group>"; };
 		8024011A2137179D00ECC4CB /* githuber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = githuber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8024011D2137179D00ECC4CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		802401222137179D00ECC4CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -88,6 +94,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		801A8DE9213AB95800B228CE /* businessmanager */ = {
+			isa = PBXGroup;
+			children = (
+				801A8DEA213AB98400B228CE /* Consuela.swift */,
+			);
+			path = businessmanager;
+			sourceTree = "<group>";
+		};
 		802401112137179D00ECC4CB = {
 			isa = PBXGroup;
 			children = (
@@ -111,6 +125,7 @@
 		8024011C2137179D00ECC4CB /* githuber */ = {
 			isa = PBXGroup;
 			children = (
+				801A8DE9213AB95800B228CE /* businessmanager */,
 				8094E94F2138CABB00E17525 /* auxiliary */,
 				8094E948213750B600E17525 /* datamanagers */,
 				8094E94521373CD300E17525 /* cells */,
@@ -158,6 +173,7 @@
 				8094E9432137368200E17525 /* GitHubUser.swift */,
 				8094E94B2137622F00E17525 /* GHSearchResponse.swift */,
 				8094E94D21376A1A00E17525 /* GHSearchUser.swift */,
+				801A8DEC213ABA8100B228CE /* GHError.swift */,
 			);
 			path = datamodels;
 			sourceTree = "<group>";
@@ -182,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				8094E9502138CAC700E17525 /* Extensions.swift */,
+				801A8DE7213AB54A00B228CE /* Utils.swift */,
 			);
 			path = auxiliary;
 			sourceTree = "<group>";
@@ -322,9 +339,12 @@
 				8094E94E21376A1A00E17525 /* GHSearchUser.swift in Sources */,
 				8024015521371A6C00ECC4CB /* UserDetailController.swift in Sources */,
 				8094E9442137368200E17525 /* GitHubUser.swift in Sources */,
+				801A8DE8213AB54A00B228CE /* Utils.swift in Sources */,
 				8094E94A213750D800E17525 /* RESTManager.swift in Sources */,
 				8024015321371A3D00ECC4CB /* StalkingController.swift in Sources */,
 				8094E94C2137622F00E17525 /* GHSearchResponse.swift in Sources */,
+				801A8DED213ABA8100B228CE /* GHError.swift in Sources */,
+				801A8DEB213AB98400B228CE /* Consuela.swift in Sources */,
 				8024011E2137179D00ECC4CB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

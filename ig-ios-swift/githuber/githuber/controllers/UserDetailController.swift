@@ -13,15 +13,23 @@ class UserDetailController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var detailNameLabel: UILabel!
     @IBOutlet weak var detailEmailLabel: UILabel!
     @IBOutlet weak var detailAvatarImage: UIImageView!
-    
     @IBOutlet weak var containerViewNotFound: UIView!
-    
     @IBOutlet weak var followersTableView: UITableView!
     
     var followers = [GHSearchUser]()
     
     var detailGHUser: GitHubUser? {
         didSet {
+            configureView()
+        }
+    }
+    
+    // ### Lifecycle Methods ###
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        if detailGHUser != nil {
             configureView()
         }
     }
@@ -36,43 +44,17 @@ class UserDetailController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    override func viewDidAppear(_ animated: Bool) {
         if detailGHUser != nil {
-            configureView()
-            
             refreshFollowers()
         }
     }
     
-    func configureView() {
-        if let detailGHUser = detailGHUser {
-            if let nameLabel = detailNameLabel, let emailLabel = detailEmailLabel, let avatarImage = detailAvatarImage {
-                nameLabel.text = detailGHUser.name != "" ? detailGHUser.name : "..."
-                emailLabel.text = "@"+detailGHUser.login
-                avatarImage.downloaded(from: detailGHUser.avatar_url)
-            }
-        }
-    }
-    
-    func refreshFollowers() {
-        RESTManager.getFollowers(forLogin: detailGHUser!.login) { (wasSuccessful, followersResponse) in
-            if wasSuccessful {
-                self.followers = followersResponse
-                
-                DispatchQueue.main.async {
-                    self.followersTableView.reloadData()
-                }
-            } else {
-                // TODO Deal with error
-            }
-        }
-    }
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    // ### TableView Methods ###
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if self.followers.count > 0 {
@@ -99,5 +81,30 @@ class UserDetailController: UIViewController, UITableViewDataSource, UITableView
         cell.avatarImage!.downloaded(from: follower.avatar_url)
         
         return cell
+    }
+    
+    // ### UI Update Methods
+    
+    func configureView() {
+        if let detailGHUser = detailGHUser {
+            if let nameLabel = detailNameLabel, let emailLabel = detailEmailLabel, let avatarImage = detailAvatarImage {
+                nameLabel.text = detailGHUser.name != "" ? detailGHUser.name : "..."
+                emailLabel.text = "@"+detailGHUser.login
+                avatarImage.downloaded(from: detailGHUser.avatar_url)
+            }
+        }
+    }
+    
+    func refreshFollowers() {
+        Consuela.getFollowers(forLogin: detailGHUser!.login) { (ghError, searchResults) in
+            if ghError == nil {
+                self.followers = searchResults
+                
+                self.followersTableView.reloadData()
+            } else {
+                // Show Error
+                self.present(getErrorAlert(withTitle: "Application Error", andMessage: ghError!.errMessage, completion: nil), animated: true)
+            }
+        }
     }
 }

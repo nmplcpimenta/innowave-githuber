@@ -12,11 +12,12 @@ import UIKit
 class RESTManager {
     
     static let imageCache = NSCache<NSString, UIImage>()
+    static private let urlBase = "https://api.github.com/"
     
-    static func searchUser(user: String, handler: @escaping (Bool, [GHSearchUser]) -> Void) {
-        let urlString = "https://api.github.com/search/users?q="+user+"+type:user+in:login+in:email"
+    static func searchUser(user: String, responseHandler: @escaping (GHError?, [GHSearchUser]) -> Void) {
+        let urlString = urlBase+"search/users?q="+user+"+type:user+in:login+in:email"
         guard let url = URL(string: urlString) else {
-            handler(false, [])
+            responseHandler(GHError(errMessage: "Couldn't parse URL"), [])
             
             return
         }
@@ -29,15 +30,13 @@ class RESTManager {
             if error != nil {
                 print(error!.localizedDescription)
                 
-                handler(false, [])
+                responseHandler(GHError(errMessage: "There was a communication problem: "+error!.localizedDescription), [])
                 
                 return
             }
             
             guard let data = data else {
-                print("data stuff")
-                
-                handler(false, [])
+                responseHandler(GHError(errMessage: "Couldn't parse data from server"), [])
                 
                 return
             }
@@ -45,20 +44,19 @@ class RESTManager {
             do {
                 let ghSearchResponse = try JSONDecoder().decode(GHSearchResponse.self, from: data)
                 
-                handler(true, ghSearchResponse.items)
+                responseHandler(nil, ghSearchResponse.items)
             } catch let jsonError {
-                print(jsonError)
+                print(jsonError.localizedDescription)
                 
-                handler(false, [])
+                responseHandler(GHError(errMessage: "Couldn't parse JSON response: "+jsonError.localizedDescription), [])
             }
         }.resume()
     }
     
-    static func getUser(withLogin login: String, handler: @escaping (Bool, GitHubUser?) -> Void) {
-        let urlString = "https://api.github.com/users/"+login
-        
+    static func getUser(withLogin login: String, responseHandler: @escaping (GHError?, GitHubUser?) -> Void) {
+        let urlString = urlBase+"users/"+login
         guard let url = URL(string: urlString) else {
-            handler(false, nil)
+            responseHandler(GHError(errMessage: "Couldn't parse URL"), nil)
             
             return
         }
@@ -71,15 +69,13 @@ class RESTManager {
             if error != nil {
                 print(error!.localizedDescription)
                 
-                handler(false, nil)
+                responseHandler(GHError(errMessage: "There was a communication problem: "+error!.localizedDescription), nil)
                 
                 return
             }
             
             guard let data = data else {
-                print("data stuff")
-                
-                handler(false, nil)
+                responseHandler(GHError(errMessage: "Couldn't parse data"), nil)
                 
                 return
             }
@@ -87,20 +83,19 @@ class RESTManager {
             do {
                 let githubUser = try JSONDecoder().decode(GitHubUser.self, from: data)
                 
-                handler(true, githubUser)
+                responseHandler(nil, githubUser)
             } catch let jsonError {
-                print(jsonError)
+                print(jsonError.localizedDescription)
                 
-                handler(false,nil)
+                responseHandler(GHError(errMessage: "Couldn't parse JSON response: "+jsonError.localizedDescription),nil)
             }
         }.resume()
     }
     
-    static func getFollowers(forLogin login: String, handler: @escaping (Bool, [GHSearchUser]) -> Void) {
-        let urlString = "https://api.github.com/users/"+login+"/followers"
-        
+    static func getFollowers(forLogin login: String, responseHandler: @escaping (GHError?, [GHSearchUser]) -> Void) {
+        let urlString = urlBase+"users/"+login+"/followers"
         guard let url = URL(string: urlString) else {
-            handler(false, [])
+            responseHandler(GHError(errMessage: "Couldn't parse URL"), [])
             
             return
         }
@@ -113,15 +108,13 @@ class RESTManager {
             if error != nil {
                 print(error!.localizedDescription)
                 
-                handler(false, [])
+                responseHandler(GHError(errMessage: "There was a communication problem: "+error!.localizedDescription), [])
                 
                 return
             }
             
             guard let data = data else {
-                print("data stuff")
-                
-                handler(false, [])
+                responseHandler(GHError(errMessage: "Couldn't parse data"), [])
                 
                 return
             }
@@ -129,11 +122,11 @@ class RESTManager {
             do {
                 let followers = try JSONDecoder().decode([GHSearchUser].self, from: data)
                 
-                handler(true, followers)
+                responseHandler(nil, followers)
             } catch let jsonError {
-                print(jsonError)
+                print(jsonError.localizedDescription)
                 
-                handler(false, [])
+                responseHandler(GHError(errMessage: "Couldn't parse JSON response: "+jsonError.localizedDescription), [])
             }
         }.resume()
     }

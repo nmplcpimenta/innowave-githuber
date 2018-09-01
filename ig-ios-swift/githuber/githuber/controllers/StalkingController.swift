@@ -18,23 +18,17 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
     
     let searchController = UISearchController(searchResultsController: nil)
     
+    // ### Lifecycle Methods ###
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        
-        
-        
-        //searchController.searchResultsUpdater = self
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "username/e-mail GitHub"
         searchController.searchBar.barStyle = .blackTranslucent
         searchController.searchBar.searchBarStyle = .minimal
         UIBarButtonItem.appearance(whenContainedInInstancesOf:[UISearchBar.self]).tintColor = UIColor.init(red: 4/256.0, green: 83/256.0, blue: 114/256.0, alpha: 1)
-        
-        /*if #available(iOS 11.0, *) {
-            searchController.searchBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        }*/
         
         // Include the search bar within the navigation bar.
         navigationItem.titleView = searchController.searchBar
@@ -42,9 +36,7 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
         
-        //navigationItem.searchController = searchController
         definesPresentationContext = true
-        
         
         if let splitViewController = splitViewController {
             let controllers = splitViewController.viewControllers
@@ -78,6 +70,8 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    // ### TableView Methods ###
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -113,24 +107,21 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let sv = UIViewController.displaySpinner(onView: self.view)
         
-        RESTManager.getUser(withLogin: ghSearchUsers[indexPath.row].login) { (wasSuccessful, githubUser) in
-            if wasSuccessful {
-                DispatchQueue.main.async {
-                    UIViewController.removeSpinner(spinner: sv)
-                    
-                    self.performSegue(withIdentifier: "showUserDetail", sender: githubUser)
-                }
-            } else {
-                // TODO Show error
+        Consuela.getUser(withLogin: ghSearchUsers[indexPath.row].login) { (ghError, ghUser) in
+            if ghError == nil {
+                UIViewController.removeSpinner(spinner: sv)
                 
-                DispatchQueue.main.async {
-                    UIViewController.removeSpinner(spinner: sv)
-                    
-                    
-                }
+                self.performSegue(withIdentifier: "showUserDetail", sender: ghUser)
+            } else {
+                UIViewController.removeSpinner(spinner: sv)
+                
+                // Show error
+                self.present(getErrorAlert(withTitle: "Application Error", andMessage: ghError!.errMessage, completion: nil), animated: true)
             }
         }
     }
+    
+    // ### Navigation Methods ###
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showUserDetail" {
@@ -143,22 +134,33 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
+    // ### UI Interaction Methods ###
+    
     func searchBarIsEmpty() -> Bool {
         // Returns true if the text is empty or nil
         return searchController.searchBar.text?.isEmpty ?? true
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        filterContentForSearchText(searchController.searchBar.text!)
     }
     
     func filterContentForSearchText(_ searchText: String, scope: String = "All") {
         let sv = UIViewController.displaySpinner(onView: self.view)
         
         if !searchBarIsEmpty() {
-            RESTManager.searchUser(user: searchText.lowercased()) { (wasSuccessful, ghUsers) in
-                self.ghSearchUsers = ghUsers
-                
-                DispatchQueue.main.async {
+            Consuela.searchUser(user: searchText.lowercased()) { (ghError, searchResults) in
+                if (ghError == nil) {
+                    self.ghSearchUsers = searchResults
+                    
                     self.tableView.reloadData()
                     
                     UIViewController.removeSpinner(spinner: sv)
+                } else {
+                    UIViewController.removeSpinner(spinner: sv)
+                    
+                    // Show error
+                    self.present(getErrorAlert(withTitle: "Application Error", andMessage: ghError!.errMessage, completion: nil), animated: true)
                 }
             }
         } else {
@@ -170,14 +172,5 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
-    }
-    
-    // Called when search bar text is changed
-    /*func updateSearchResults(for searchController: UISearchController) {
-        filterContentForSearchText(searchController.searchBar.text!)
-    }*/
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        filterContentForSearchText(searchController.searchBar.text!)
     }
 }

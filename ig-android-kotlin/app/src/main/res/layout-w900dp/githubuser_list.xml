@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="horizontal"
+    android:showDividers="middle"
+    tools:context="pt.nmplcpimenta.innowavegithuber.GitHubUserListActivity">
+
+    <!--
+    This layout is a two-pane layout for the GitHubUsers
+    master/detail flow.
+    
+    -->
+    <LinearLayout
+        android:layout_width="@dimen/item_width"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.SearchView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:queryHint="username/e-mail GitHub"
+            app:iconifiedByDefault="false"/>
+
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/githubuser_list"
+            android:name="pt.nmplcpimenta.innowave_githuber.GitHubUserListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="pt.nmplcpimenta.innowave_githuber.pt.nmplcpimenta.innowavegithuber.GitHubUserListActivity"
+            tools:listitem="@layout/githubuser_list_content" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/githubuser_detail_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3" />
+
+</LinearLayout>

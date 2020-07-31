@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserDetailController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class UserDetailController: UIViewController {
     
     @IBOutlet weak var detailNameLabel: UILabel!
     @IBOutlet weak var detailEmailLabel: UILabel!
@@ -50,12 +50,33 @@ class UserDetailController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    // ### UI Update Methods
+    
+    func configureView() {
+        if let detailGHUser = detailGHUser {
+            if let nameLabel = detailNameLabel, let emailLabel = detailEmailLabel, let avatarImage = detailAvatarImage {
+                nameLabel.text = detailGHUser.name != "" ? detailGHUser.name : "..."
+                emailLabel.text = "@"+detailGHUser.login
+                avatarImage.downloaded(from: detailGHUser.avatar_url)
+            }
+        }
     }
     
-    // ### TableView Methods ###
-    
+    func refreshFollowers() {
+        Consuela.getFollowers(forLogin: detailGHUser!.login) { (ghError, searchResults) in
+            if ghError == nil {
+                self.followers = searchResults
+                
+                self.followersTableView.reloadData()
+            } else {
+                // Show Error
+                self.present(getErrorAlert(withTitle: "Application Error", andMessage: ghError!.errMessage, completion: nil), animated: true)
+            }
+        }
+    }
+}
+
+extension UserDetailController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if self.followers.count > 0 {
             tableView.separatorStyle = .singleLine
@@ -81,30 +102,5 @@ class UserDetailController: UIViewController, UITableViewDataSource, UITableView
         cell.avatarImage!.downloaded(from: follower.avatar_url)
         
         return cell
-    }
-    
-    // ### UI Update Methods
-    
-    func configureView() {
-        if let detailGHUser = detailGHUser {
-            if let nameLabel = detailNameLabel, let emailLabel = detailEmailLabel, let avatarImage = detailAvatarImage {
-                nameLabel.text = detailGHUser.name != "" ? detailGHUser.name : "..."
-                emailLabel.text = "@"+detailGHUser.login
-                avatarImage.downloaded(from: detailGHUser.avatar_url)
-            }
-        }
-    }
-    
-    func refreshFollowers() {
-        Consuela.getFollowers(forLogin: detailGHUser!.login) { (ghError, searchResults) in
-            if ghError == nil {
-                self.followers = searchResults
-                
-                self.followersTableView.reloadData()
-            } else {
-                // Show Error
-                self.present(getErrorAlert(withTitle: "Application Error", andMessage: ghError!.errMessage, completion: nil), animated: true)
-            }
-        }
     }
 }

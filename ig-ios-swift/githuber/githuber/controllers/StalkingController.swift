@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StalkingController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+class StalkingController: UIViewController {
 
     @IBOutlet var tableView: UITableView!
     
@@ -65,14 +65,41 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
             navigationItem.hidesSearchBarWhenScrolling = true
         }
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    // ### Navigation Methods ###
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showUserDetail" {
+            let ghUser = sender as! GitHubUser
+            
+            let controller = (segue.destination as! UINavigationController).topViewController as! UserDetailController
+            controller.detailGHUser = ghUser
+            controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+            controller.navigationItem.leftItemsSupplementBackButton = true
+        }
     }
-    
-    // ### TableView Methods ###
-    
+}
+
+extension StalkingController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let sv = UIViewController.displaySpinner(onView: self.view)
+        
+        Consuela.getUser(withLogin: ghSearchUsers[indexPath.row].login) { (ghError, ghUser) in
+            if ghError == nil {
+                UIViewController.removeSpinner(spinner: sv)
+                
+                self.performSegue(withIdentifier: "showUserDetail", sender: ghUser)
+            } else {
+                UIViewController.removeSpinner(spinner: sv)
+                
+                // Show error
+                self.present(getErrorAlert(withTitle: "Application Error", andMessage: ghError!.errMessage, completion: nil), animated: true)
+            }
+        }
+    }
+}
+
+extension StalkingController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -103,38 +130,9 @@ class StalkingController: UIViewController, UITableViewDataSource, UITableViewDe
         
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let sv = UIViewController.displaySpinner(onView: self.view)
-        
-        Consuela.getUser(withLogin: ghSearchUsers[indexPath.row].login) { (ghError, ghUser) in
-            if ghError == nil {
-                UIViewController.removeSpinner(spinner: sv)
-                
-                self.performSegue(withIdentifier: "showUserDetail", sender: ghUser)
-            } else {
-                UIViewController.removeSpinner(spinner: sv)
-                
-                // Show error
-                self.present(getErrorAlert(withTitle: "Application Error", andMessage: ghError!.errMessage, completion: nil), animated: true)
-            }
-        }
-    }
-    
-    // ### Navigation Methods ###
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showUserDetail" {
-            let ghUser = sender as! GitHubUser
-            
-            let controller = (segue.destination as! UINavigationController).topViewController as! UserDetailController
-            controller.detailGHUser = ghUser
-            controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-            controller.navigationItem.leftItemsSupplementBackButton = true
-        }
-    }
-    
-    // ### UI Interaction Methods ###
+}
+
+extension StalkingController: UISearchBarDelegate {
     
     func searchBarIsEmpty() -> Bool {
         // Returns true if the text is empty or nil
